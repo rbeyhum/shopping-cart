@@ -56,6 +56,9 @@ while True:
     selected_id = input("Please input a product identfier (1-20 are valid), or 'DONE' if there are no more items: ")
     if selected_id == "DONE":
         break
+    elif int(selected_id) > 20 or int(selected_id) < 1:
+        print("Please input a valid identifier. You can resume scanning your items!")
+        exit   
     else:    
         selected_ids.append(selected_id)
 
