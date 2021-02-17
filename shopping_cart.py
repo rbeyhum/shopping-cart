@@ -49,14 +49,31 @@ grocery_checkout = datetime.datetime.now()
 
 
 
+selected_ids=[] #here we create an empty list to add all ids selected
+price_total = 0
 
-
-
+while True:
+    selected_id = input("Please input a product identfier (1-20 are valid), or 'DONE' if there are no more items: ")
+    if selected_id == "DONE":
+        break
+    else:    
+        selected_ids.append(selected_id)
 
 # printing the final receipt
+
 print("------------------")
 print(grocery_name)
 print("------------------")
 print("Web: ",grocery_web)
 print("Phone: ",grocery_num)
 print("Checkout Time: ",grocery_checkout.strftime("%Y-%m-%d %I:%M:%S %p"))
+print("------------------")
+
+
+for selected_id in selected_ids:
+    matching_products = [item for item in products if str(item["id"]) == str(selected_id)]
+    matching_product = matching_products[0]
+    print(matching_product["name"]) 
+
+
+
