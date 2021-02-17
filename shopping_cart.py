@@ -1,5 +1,9 @@
 # shopping_cart.py
 
+import os 
+import datetime
+
+
 products = [
     {"id":1, "name": "Chocolate Sandwich Cookies", "department": "snacks", "aisle": "cookies cakes", "price": 3.50},
     {"id":2, "name": "All-Seasons Salt", "department": "pantry", "aisle": "spices seasonings", "price": 4.99},
@@ -36,7 +40,23 @@ def to_usd(my_price):
     """
     return f"${my_price:,.2f}" #> $12,000.71
 
+# defining my grocery store by giving it a name, web address, etc.
 
-# TODO: write some Python code here to produce the desired output
+grocery_name = "Shoppers"
+grocery_web = "https://www.shoopers.com"
+grocery_num = "(202) 398-7642"
+grocery_checkout = datetime.datetime.now()
 
-print(products)
+
+
+
+
+
+
+# printing the final receipt
+print("------------------")
+print(grocery_name)
+print("------------------")
+print("Web: ",grocery_web)
+print("Phone: ",grocery_num)
+print("Checkout Time: ",grocery_checkout.strftime("%Y-%m-%d %I:%M:%S %p"))
