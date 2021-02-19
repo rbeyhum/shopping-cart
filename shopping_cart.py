@@ -42,7 +42,7 @@ def to_usd(my_price):
 
 # defining my grocery store by giving it a name, web address, etc.
 
-grocery_name = "Shoppers"
+grocery_name = "SHOPPERS"
 grocery_web = "https://www.shoopers.com"
 grocery_num = "(202) 398-7642"
 grocery_checkout = datetime.datetime.now()
@@ -71,12 +71,14 @@ print("Web: ",grocery_web)
 print("Phone: ",grocery_num)
 print("Checkout Time: ",grocery_checkout.strftime("%Y-%m-%d %I:%M:%S %p"))
 print("------------------")
-
+print("SHOPPING CART ITEMS: ")
 
 for selected_id in selected_ids:
     matching_products = [item for item in products if str(item["id"]) == str(selected_id)]
     matching_product = matching_products[0]
-    print(matching_product["name"]) 
+    print("+",matching_product["name"],"(",to_usd(matching_product["price"]),")") 
 
 
-
+print("------------------")
+print("THANK YOU, SEE YOU AGAIN SOON!")
+print("------------------")
