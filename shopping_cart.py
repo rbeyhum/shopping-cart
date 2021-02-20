@@ -3,6 +3,8 @@
 import os 
 import datetime
 
+from dotenv import load_dotenv
+
 
 products = [
     {"id":1, "name": "Chocolate Sandwich Cookies", "department": "snacks", "aisle": "cookies cakes", "price": 3.50},
@@ -47,7 +49,9 @@ grocery_web = "https://www.shoopers.com"
 grocery_num = "(202) 398-7642"
 grocery_checkout = datetime.datetime.now()
 
+load_dotenv()
 
+TAX_RATE = os.getenv("TAX_RATE", default=0.0875)
 
 selected_ids=[] #here we create an empty list to add all ids selected
 price_total = 0
@@ -76,9 +80,14 @@ print("SHOPPING CART ITEMS: ")
 for selected_id in selected_ids:
     matching_products = [item for item in products if str(item["id"]) == str(selected_id)]
     matching_product = matching_products[0]
+    price_total = price_total + matching_product["price"]
     print("+",matching_product["name"],"(",to_usd(matching_product["price"]),")") 
 
+tax = price_total*TAX_RATE
 
+print("------------------")
+print("SUBTOTAL: ",to_usd(price_total))
+print("TAX: ",to_usd(tax))
 print("------------------")
 print("THANK YOU, SEE YOU AGAIN SOON!")
 print("------------------")
