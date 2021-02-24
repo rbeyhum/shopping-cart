@@ -2,7 +2,6 @@
 
 import os 
 import datetime
-import sys
 
 from dotenv import load_dotenv
 from sendgrid import SendGridAPIClient
@@ -96,12 +95,15 @@ for selected_id in selected_ids:
     matching_products = [item for item in products if str(item["id"]) == str(selected_id)]
     matching_product = matching_products[0]
     if matching_product["price_per"] == "item":
-        price_total = price_total*num_items + matching_product["price"]
+        price_total = price_total + matching_product["price"]*num_items
     elif matching_product["price_per"] == "pound":
-        price_total = price_total*num_pounds + matching_product["price"] 
-    price_total = price_total + matching_product["price"]
-    receipt_content += "+"+matching_product["name"]+"("+to_usd(matching_product["price"])+")" + "\n" 
-    print("+",matching_product["name"],"(",to_usd(matching_product["price"]),")") 
+        price_total = price_total + matching_product["price"]*num_pounds 
+    receipt_content += "+"+matching_product["name"]+"("+to_usd(matching_product["price"])+")" + "\n"
+    if matching_product["price_per"] == "item":
+        print("+",num_items, matching_product["name"],"(",to_usd(matching_product["price"]),")") 
+    elif matching_product["price_per"] == "pound":
+        print("+",num_pounds,matching_product["name"],"(",to_usd(matching_product["price"]),")")  
+    
 
 
 tax = price_total*float(TAX_RATE)
@@ -127,3 +129,33 @@ elif copy == "n":
 
 
 # ask customer whether they would like a copy of their receipt sent via email using the sendgrid package 
+
+email = input("Would you like to receive a copy of your receipt sent to your email? [y/n]")
+if email == "y":
+    SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", default="OOPS, please set env var called 'SENDGRID_API_KEY'")
+    SENDER_ADDRESS = os.getenv("SENDER_ADDRESS", default="OOPS, please set env var called 'SENDER_ADDRESS'")
+
+    client = SendGridAPIClient(SENDGRID_API_KEY) #> <class 'sendgrid.sendgrid.SendGridAPIClient>
+    print("CLIENT:", type(client))
+
+    subject = "Your Receipt from Shoppers"
+
+    print("HTML:", receipt_content)
+
+    # FYI: we'll need to use our verified SENDER_ADDRESS as the `from_email` param
+    # ... but we can customize the `to_emails` param to send to other addresses
+    message = Mail(from_email=SENDER_ADDRESS, to_emails=SENDER_ADDRESS, subject=subject, html_content=html_content)
+
+    try:
+        response = client.send(message)
+
+        print("RESPONSE:", type(response)) #> <class 'python_http_client.client.Response'>
+        print(response.status_code) #> 202 indicates SUCCESS
+        print(response.body)
+        print(response.headers)
+
+    except Exception as err:
+        print(type(err))
+        print(err) 
+elif email == "n":
+    exit
