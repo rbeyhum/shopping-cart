@@ -124,3 +124,6 @@ if copy == "y":
         file.write(receipt_content)
 elif copy == "n": 
     exit
+
+
+# ask customer whether they would like a copy of their receipt sent via email using the sendgrid package 
