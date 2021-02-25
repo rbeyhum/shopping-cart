@@ -10,7 +10,7 @@ The program includes a list of items that a customer at *Shoppers* might encount
 
 ### Repository Setup
 
-Upon the download of the repository, preferably onto customer's desktop, the customer must open their command-line (in Mac case: Terminal) and make sure that the working directory is currently their desktop by typing the following line: 
+Upon the clone of the repository, preferably onto customer's desktop, the customer must open their command-line (in Mac case: Terminal) and make sure that the working directory is currently their desktop by typing the following line: 
  
  ```sh
 cd ~/Desktop/shopping-cart
@@ -39,4 +39,12 @@ After completing these three steps, the customer is now ready to shop and see ho
 
 The program allows the customer to change the tax rate based on where they are living. In the *.env* file, there is a variable called *TAX_RATE*. Hence, to change the rate, the customer must access the file and write the percentage in terms of a decimal as already shown by the default rate of 0.0875 and that will automatically change the tax rate for the program to process (after saving the file).
 
-Moreover, the program allows the customer to generate a txt file version of their receipt and also have access to it via email. This is also created using the *.env* file. In conclusion, this program allows the customer to more than just generate a simple receipt but has added value which allows for a smoother checking out (at the cashier process). 
+Moreover, the program allows the customer to generate a txt file version of their receipt and also have access to it via email. 
+
+In order to receive an email, you must undergo the following steps: First, sign up for a SendGrid account, then follow the instructions to complete your "Single Sender Verification", clicking the link in a confirmation email to verify your account.
+
+Then create a SendGrid API Key with "full access" permissions. Store the API Key value in an environment variable called SENDGRID_API_KEY, that is already found in the *.env* file.
+
+Also edit the environment variable called SENDER_ADDRESS to be the same email address as the single sender address you just associated with your SendGrid account.
+
+In conclusion, this program allows the customer to more than just generate a simple receipt but has added value which allows for a smoother checking out (at the cashier process). 

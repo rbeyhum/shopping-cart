@@ -56,7 +56,7 @@ load_dotenv()
 
 TAX_RATE = os.getenv("TAX_RATE", default=0.0875)
 
-selected_ids=[] #here we create an empty list to add all ids selected
+
 price_total = 0
 matching_products = []
 
@@ -66,21 +66,23 @@ while True:
         break
     elif int(selected_id) > 21 or int(selected_id) < 1:
         print("Please input a valid identifier. You can resume scanning your items!")   
-    else:    
-        selected_ids.append(selected_id)
+
     for item in products:
         if str(item["id"]) == str(selected_id):
-            matching_products.append(item)
-            matching_product = matching_products[-1]
+            matching_product = item
     if matching_product["price_per"] == "item":
-        num_items = int(input("Please enter the number of items desired: "))
+        num = int(input("Please enter the number of items desired: "))
     elif matching_product["price_per"] == "pound":
-        num_pounds = float(input("Please enter the number of pounds desired: "))
-    
+        num = float(input("Please enter the number of pounds desired: "))
+    matching_products.append((matching_product,num))
+
 
 # printing the final receipt
 receipt_content = ""
+email_content = ""
+
 receipt_content += "------------------"+"\n" + grocery_name + "\n" + "------------------" + "\n" + "Web: " + grocery_name + "\n" + "Phone: " + grocery_num + "\n" + "Checkout Time: " + grocery_checkout.strftime("%Y-%m-%d %I:%M:%S %p") + "\n" + "------------------" + "\n" + "SHOPPING CART ITEMS: " + "\n"
+email_content += "------------------"+"<br>" + grocery_name + "<br>" + "------------------" + "<br>" + "Web: " + grocery_name + "<br>" + "Phone: " + grocery_num + "<br>" + "Checkout Time: " + grocery_checkout.strftime("%Y-%m-%d %I:%M:%S %p") + "<br>" + "------------------" + "<br>" + "SHOPPING CART ITEMS: " + "<br>"
 print("------------------")
 print(grocery_name)
 print("------------------")
@@ -91,24 +93,20 @@ print("------------------")
 print("SHOPPING CART ITEMS: ")
 
 
-for selected_id in selected_ids:
-    matching_products = [item for item in products if str(item["id"]) == str(selected_id)]
-    matching_product = matching_products[0]
-    if matching_product["price_per"] == "item":
-        price_total = price_total + matching_product["price"]*num_items
-    elif matching_product["price_per"] == "pound":
-        price_total = price_total + matching_product["price"]*num_pounds 
-    receipt_content += "+"+matching_product["name"]+"("+to_usd(matching_product["price"])+")" + "\n"
-    if matching_product["price_per"] == "item":
-        print("+",num_items, matching_product["name"],"(",to_usd(matching_product["price"]),")") 
-    elif matching_product["price_per"] == "pound":
-        print("+",num_pounds,matching_product["name"],"(",to_usd(matching_product["price"]),")")  
-    
+for product in matching_products:
+    matching_product = product[0]
+    num = product[1]
+    price_total += matching_product["price"]*num
+    receipt_content += "+"+str(num) + " "+ matching_product["name"]+"("+str(to_usd(matching_product["price"]))+")" + "\n"
+    email_content += "+"+str(num) + " "+ matching_product["name"]+"("+str(to_usd(matching_product["price"]))+")" + "<br>"
+    print("+",num, matching_product["name"],"(",to_usd(matching_product["price"]),")") 
+
 
 
 tax = price_total*float(TAX_RATE)
 total_price = price_total + tax
 receipt_content += "------------------" + "\n" + "SUBTOTAL: " + to_usd(price_total) +"\n" + "TAX: " + to_usd(tax) + "\n" + "TOTAL: " + to_usd(total_price) + "\n" + "------------------" + "\n" + "THANK YOU, SEE YOU AGAIN SOON!" + "\n" + "------------------"
+email_content += "------------------" + "<br>" + "SUBTOTAL: " + to_usd(price_total) +"<br>" + "TAX: " + to_usd(tax) + "<br>" + "TOTAL: " + to_usd(total_price) + "<br>" + "------------------" + "<br>" + "THANK YOU, SEE YOU AGAIN SOON!" + "<br>" + "------------------"
 print("------------------")
 print("SUBTOTAL: ",to_usd(price_total))
 print("TAX: ",to_usd(tax))
@@ -139,8 +137,8 @@ if email == "y":
     print("CLIENT:", type(client))
 
     subject = "Your Receipt from Shoppers"
-
-    print("HTML:", receipt_content)
+    html_content = email_content
+    print("HTML:", html_content)
 
     # FYI: we'll need to use our verified SENDER_ADDRESS as the `from_email` param
     # ... but we can customize the `to_emails` param to send to other addresses
